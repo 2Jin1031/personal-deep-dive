@@ -1,1 +1,3 @@
 rootProject.name = 'personalDeepDiveProject'
+
+include 'requestbody-vs-modelattribute'
