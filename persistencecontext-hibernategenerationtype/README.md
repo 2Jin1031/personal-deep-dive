@@ -1,0 +1,1 @@
+/Users/leejin/Documents/obsidian/우아한테크코스/0) Logs/DeepDive/2025-06-19 MySQL에서 GenerationType.IDENTITY 전략.md
