@@ -10,7 +10,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/persistencecontext-hibernategenerationtype" />
             <option value="$PROJECT_DIR$/requestbody-vs-modelattribute" />
+            <option value="$PROJECT_DIR$/requestbody-vs-modelattribute2" />
           </set>
         </option>
       </GradleProjectSettings>

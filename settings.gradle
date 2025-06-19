@@ -1,3 +1,5 @@
 rootProject.name = 'personalDeepDiveProject'
 
 include 'requestbody-vs-modelattribute'
+include 'persistencecontext-hibernategenerationtype'
+include 'requestbody-vs-modelattribute2'
