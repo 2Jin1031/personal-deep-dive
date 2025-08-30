@@ -6,6 +6,3 @@ spring:
     console:
       enabled: true
       path: /h2-console
-# OSIV로 인해 더티체킹이 가능했던 것인지 검증하기 위해 OSIV 끄는 설정 tmp 추가
-  jpa:
-    open-in-view: false
