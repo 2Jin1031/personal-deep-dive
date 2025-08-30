@@ -7,7 +7,7 @@ README: https://github.com/2Jin1031/personal-deep-dive/blob/main/requestbody-vs-
 README: https://github.com/2Jin1031/personal-deep-dive/tree/main/persistencecontext-hibernategenerationtype/README.md
 
 ## 장소3: resovler와 영속성 컨텍스트
-
+README: https://github.com/2Jin1031/personal-deep-dive/tree/main/resolver-entitymanager
 
 
 
