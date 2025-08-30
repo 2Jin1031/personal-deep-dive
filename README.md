@@ -4,6 +4,7 @@
 README: https://github.com/2Jin1031/personal-deep-dive/blob/main/requestbody-vs-modelattribute/README.md
 
 ## 장소2: MySQL에서 GenerationType.IDENTITY 전략
+README: https://github.com/2Jin1031/personal-deep-dive/tree/main/persistencecontext-hibernategenerationtype/README.md
 
 ## 장소3: resovler와 영속성 컨텍스트
 
