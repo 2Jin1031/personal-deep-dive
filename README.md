@@ -4,3 +4,21 @@
 README: https://github.com/2Jin1031/personal-deep-dive/blob/main/requestbody-vs-modelattribute/README.md
 
 ## 장소2: MySQL에서 GenerationType.IDENTITY 전략
+
+## 장소3: resovler와 영속성 컨텍스트
+
+
+
+
+
+
+---
+
+# 사용법
+각 장소는 별도의 프로젝트로 생성해 관리한다.
+
+`settings.gradle`에 해당 프로젝트 디렉터리 이름을 추가하면 관리할 수 있다.
+
+```text
+include {directoryName}
+```
