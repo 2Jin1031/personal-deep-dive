@@ -11,9 +11,21 @@
 ### 실험 결과
 `2.1)` 임으로 더티 체킹이 가능하다
 
+### + 추가 실험
+가설: OSIV를 끄면 더티 체킹이 되지 않을까?
+실험 방식: application.yml에 OSIV 끄는 설정 추가
+- `spring:jpa:open-in-view: false`
+
+결과: 로직은 돌아가나 변하지 않음
+![img_1.png](img_1.png)
+![img.png](img.png)
+
+
 ### 알게 된 사실
 
 
 ### 개념
+
+
 
 출처
