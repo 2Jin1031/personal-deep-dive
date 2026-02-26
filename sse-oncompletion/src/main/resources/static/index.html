@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SSE 탭 전환 테스트</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #4ec9b0;
+        }
+        .status {
+            background: #2d2d30;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .status-item {
+            margin: 8px 0;
+        }
+        .connected {
+            color: #4ec9b0;
+            font-weight: bold;
+        }
+        .disconnected {
+            color: #f48771;
+            font-weight: bold;
+        }
+        .log-container {
+            background: #1e1e1e;
+            border: 1px solid #3e3e42;
+            border-radius: 5px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #007acc;
+            padding-left: 10px;
+        }
+        .log-entry.connected {
+            border-left-color: #4ec9b0;
+        }
+        .log-entry.message {
+            border-left-color: #dcdcaa;
+        }
+        .log-entry.error {
+            border-left-color: #f48771;
+        }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #1177bb;
+        }
+        button:disabled {
+            background: #3e3e42;
+            cursor: not-allowed;
+        }
+        .instructions {
+            background: #264f78;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #4fc3f7;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        .instructions li {
+            margin: 8px 0;
+        }
+        .timestamp {
+            color: #858585;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 SSE 탭 전환 동작 테스트</h1>
+
+        <div class="instructions">
+            <h3>📋 테스트 방법</h3>
+            <ol>
+                <li><strong>"연결 시작"</strong> 버튼 클릭</li>
+                <li>메시지가 2초마다 수신되는지 확인</li>
+                <li><strong>다른 탭으로 전환</strong>하고 10초 대기</li>
+                <li>다시 이 탭으로 돌아와서:
+                    <ul>
+                        <li>서버 콘솔에 "🔚 COMPLETION" 로그가 찍혔는지 확인</li>
+                        <li>이 페이지의 연결 상태 확인</li>
+                        <li>메시지가 계속 수신되는지 확인</li>
+                    </ul>
+                </li>
+                <li><strong>"서버 상태 확인"</strong> 버튼으로 서버의 활성 연결 수 확인</li>
+            </ol>
+        </div>
+
+        <div class="status">
+            <div class="status-item">
+                연결 상태: <span id="connectionStatus" class="disconnected">연결 안됨</span>
+            </div>
+            <div class="status-item">
+                수신한 메시지 수: <span id="messageCount">0</span>
+            </div>
+            <div class="status-item">
+                마지막 수신 시각: <span id="lastReceived">-</span>
+            </div>
+            <div class="status-item">
+                서버 활성 연결 수: <span id="serverConnections">-</span>
+            </div>
+        </div>
+
+        <div>
+            <button id="connectBtn" onclick="connect()">연결 시작</button>
+            <button id="disconnectBtn" onclick="disconnect()" disabled>연결 종료</button>
+            <button onclick="checkServerStatus()">서버 상태 확인</button>
+            <button onclick="clearLogs()">로그 지우기</button>
+        </div>
+
+        <h3>📝 이벤트 로그</h3>
+        <div id="logContainer" class="log-container"></div>
+    </div>
+
+    <script>
+        let eventSource = null;
+        let messageCount = 0;
+
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+
+            const timestamp = new Date().toLocaleTimeString();
+            entry.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateStatus(connected) {
+            const statusEl = document.getElementById('connectionStatus');
+            if (connected) {
+                statusEl.textContent = '연결됨';
+                statusEl.className = 'connected';
+            } else {
+                statusEl.textContent = '연결 안됨';
+                statusEl.className = 'disconnected';
+            }
+
+            document.getElementById('connectBtn').disabled = connected;
+            document.getElementById('disconnectBtn').disabled = !connected;
+        }
+
+        function connect() {
+            if (eventSource) {
+                log('⚠️ 이미 연결되어 있습니다', 'error');
+                return;
+            }
+
+            log('🔌 SSE 연결 시작...', 'connected');
+            eventSource = new EventSource('/sse');
+
+            eventSource.addEventListener('connected', (e) => {
+                log('✅ 연결 성공: ' + e.data, 'connected');
+                updateStatus(true);
+            });
+
+            eventSource.addEventListener('message', (e) => {
+                messageCount++;
+                document.getElementById('messageCount').textContent = messageCount;
+                document.getElementById('lastReceived').textContent = new Date().toLocaleTimeString();
+                log('📨 메시지 수신: ' + e.data, 'message');
+            });
+
+            eventSource.onerror = (e) => {
+                log('❌ 에러 발생 (readyState: ' + eventSource.readyState + ')', 'error');
+
+                if (eventSource.readyState === EventSource.CLOSED) {
+                    log('🔚 연결이 종료되었습니다', 'error');
+                    updateStatus(false);
+                    eventSource = null;
+                } else {
+                    log('🔄 재연결 시도 중...', 'info');
+                }
+            };
+
+            eventSource.onopen = () => {
+                log('🔓 연결이 열렸습니다', 'connected');
+            };
+        }
+
+        function disconnect() {
+            if (!eventSource) {
+                log('⚠️ 연결되어 있지 않습니다', 'error');
+                return;
+            }
+
+            log('🔌 연결 종료 중...', 'info');
+            eventSource.close();
+            eventSource = null;
+            updateStatus(false);
+            log('✅ 연결이 종료되었습니다', 'info');
+        }
+
+        async function checkServerStatus() {
+            try {
+                const response = await fetch('/status');
+                const data = await response.json();
+                document.getElementById('serverConnections').textContent = data.activeConnections;
+                log(`📊 서버 상태: 활성 연결 ${data.activeConnections}개`, 'info');
+                log(`   클라이언트 ID: ${data.clientIds.join(', ')}`, 'info');
+            } catch (e) {
+                log('❌ 서버 상태 조회 실패: ' + e.message, 'error');
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logContainer').innerHTML = '';
+            log('🗑️ 로그가 지워졌습니다', 'info');
+        }
+
+        // 페이지 언로드 시 로그
+        window.addEventListener('beforeunload', () => {
+            console.log('⚠️ 페이지 언로드 이벤트 발생');
+        });
+
+        // 페이지 가시성 변경 감지
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                log('👁️ 탭이 백그라운드로 전환됨', 'info');
+                console.log('👁️ 탭이 백그라운드로 전환됨 (hidden)');
+            } else {
+                log('👁️ 탭이 다시 활성화됨', 'connected');
+                console.log('👁️ 탭이 다시 활성화됨 (visible)');
+
+                // 서버 상태 자동 확인
+                setTimeout(checkServerStatus, 500);
+            }
+        });
+
+        log('✨ 페이지 로드 완료. "연결 시작" 버튼을 클릭하세요', 'info');
+    </script>
+</body>
+</html>

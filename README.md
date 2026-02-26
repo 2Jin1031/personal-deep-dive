@@ -9,7 +9,7 @@ README: https://github.com/2Jin1031/personal-deep-dive/tree/main/persistencecont
 ## 장소3: resovler와 영속성 컨텍스트
 README: https://github.com/2Jin1031/personal-deep-dive/tree/main/resolver-entitymanager
 
-
+# 장소4: sse의 onCompletion이 실행되는 유저 시나리오
 
 
 

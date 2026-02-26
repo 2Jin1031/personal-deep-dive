@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/requestbody-vs-modelattribute" />
             <option value="$PROJECT_DIR$/requestbody-vs-modelattribute2" />
             <option value="$PROJECT_DIR$/resolver-entitymanager" />
+            <option value="$PROJECT_DIR$/sse-oncompletion" />
           </set>
         </option>
       </GradleProjectSettings>
