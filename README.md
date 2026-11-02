@@ -11,6 +11,9 @@ README: https://github.com/2Jin1031/personal-deep-dive/tree/main/resolver-entity
 
 # 장소4: sse의 onCompletion이 실행되는 유저 시나리오
 
+## 장소5: 유니크 조건을 코드에서 막을까, DB에서 막을까
+README: https://github.com/2Jin1031/personal-deep-dive/tree/main/unique-constraint-handling/README.md
+
 
 
 ---
